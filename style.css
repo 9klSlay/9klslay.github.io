@@ -67,37 +67,120 @@ body {
   left: 25%;
 }
 
-/* ====== Tarjetas ====== */
+/* ====== TARJETAS ====== */
 
 .card {
   position: relative;
-  background-color: #111;
-  border: 2px solid #b400ff;
+  background: #111;
   border-radius: 20px;
   padding: 35px;
   text-align: center;
-  box-shadow: 0 0 25px rgba(180, 0, 255, .55);
   width: 100%;
   overflow: hidden;
+  isolation: isolate;
 }
 
-/* Glow */
+/* ====== Glow interior ====== */
 
 .glow {
   position: absolute;
   inset: -80px;
+
   background: radial-gradient(
     circle,
     rgba(180, 0, 255, .12),
     transparent 65%
   );
+
   pointer-events: none;
   z-index: 0;
 }
 
+/* ====== Interior de la tarjeta ====== */
+
+.card::after {
+  content: "";
+
+  position: absolute;
+  inset: 2px;
+
+  background: #111;
+  border-radius: 18px;
+
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ====== Borde animado ====== */
+
+.card::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: 20px;
+  padding: 2px;
+
+  background:
+    conic-gradient(
+      from var(--spin),
+
+      #7427ff 0deg,
+      #7427ff 305deg,
+
+      #8f4dff 318deg,
+      #c000ff 328deg,
+      #ff5fd2 336deg,
+      white 342deg,
+      #ff5fd2 348deg,
+      #c000ff 354deg,
+
+      #7427ff 360deg
+    );
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  animation: snakeBorder 10s linear infinite;
+
+  filter:
+    drop-shadow(0 0 8px #8f4dff)
+    drop-shadow(0 0 14px #c000ff);
+
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ====== Contenido encima de todo ====== */
+
 .card > *:not(.glow) {
   position: relative;
-  z-index: 1;
+  z-index: 3;
+}
+
+/* ====== Variable del borde ====== */
+
+@property --spin {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* ====== Animación del borde ====== */
+
+@keyframes snakeBorder {
+  from {
+    --spin: 0deg;
+  }
+
+  to {
+    --spin: 360deg;
+  }
 }
 
 /* ====== Títulos ====== */
